@@ -25,8 +25,16 @@ client.on("message", message => {
   if (message.content === "!ping") message.reply("Pong!");
 });
 
-async function onNotification(message) {
-
+async function onNotification(channelId, username, turn, game) {
+  let botChannel = await client.channels.fetch(channelId);
+  let collection = botChannel.guild.members.cache;
+  let guildMembers = Array.from(collection.values());
+  let guildMember = guildMembers.filter(guildMember => guildMember.user.username === username);
+  
+  if (guildMember.length) {
+    let memberId = guildMember[0].user.id;
+    botChannel.send(`Hey <@${memberId}>, it's time to take your turn ${turn} in ${game}`);
+  }
 }
 
 serverListener.on("turn", onNotification);

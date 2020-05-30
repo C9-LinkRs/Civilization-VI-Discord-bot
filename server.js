@@ -15,10 +15,13 @@ class Server extends EventEmitter {
       response.status(200).json({ "message": "Server's up!" });
     });
 
-    app.post("/webhook", (request, response) => {
-      response.status(200).json({ "civilization vi": request.body });
+    app.post("/webhook/:channelId", (request, response) => {
+      let body = request.body;
+      let channelId = request.params.channelId;
 
-      this.emit("turn", "a new event triggered");
+      response.status(200).json({ "message": "Done!" });
+
+      this.emit("turn", channelId, body.Value2, body.Value3, body.Value1);
     });
 
     app.listen(process.env.NODEJS_PORT, () => {
