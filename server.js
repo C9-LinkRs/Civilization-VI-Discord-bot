@@ -7,7 +7,7 @@ let EventEmitter = require("events");
 let app = express();
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+//app.use(bodyParser.urlencoded({ extended: false }));
 
 class Server extends EventEmitter {
   init() {
@@ -21,7 +21,7 @@ class Server extends EventEmitter {
 
       response.status(200).json({ "message": "Done!" });
 
-      this.emit("turn", channelId, body.Value2, body.Value3, body.Value1);
+      this.emit("turn", channelId, body.value2, body.value3, body.value1);
     });
 
     app.listen(process.env.NODEJS_PORT, () => {

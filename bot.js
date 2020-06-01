@@ -1,6 +1,8 @@
 const serverListener = require("./server");
 const Discord = require("discord.js");
 const client = new Discord.Client();
+const mailer = require("./mails/mailer");
+const fs = require("fs");
 
 client.on("ready", () => {
   console.log(`Logged in as ${client.user.tag}!`);
@@ -22,8 +24,48 @@ client.on("guildMemberAdd", member => {
 });
 
 client.on("message", message => {
-  if (message.content === "!ping") message.reply("Pong!");
+  let command = message.content.split(" ");
+  let username;
+
+  switch (command[0]) {
+    case "!ping":
+      message.reply("Pong!");
+      break;
+    case "!mail":
+      if(command.length > 1) mailCommands(command, username);
+      break;
+    default:
+      break;
+  }
 });
+
+function mailCommands(command, username) {
+  let rawData = fs.readFileSync('./db/users.json');
+  let cachedUsers = JSON.parse(rawData);
+
+  switch (command[1]) {
+    case "add":
+      if (command.length === 3) {
+        cachedUsers.push({
+          username,
+          globalNotify: true,
+          email: command[3],
+          emailNotify: true
+        });
+      }
+      break;
+    case "off":
+      break;
+    case "replace":
+      break;
+    case "on":
+      break;
+    default:
+      break;
+  }
+
+  fs.writeFileSync("./db/users.json", cachedUsers);
+}
 
 async function onNotification(channelId, username, turn, game) {
   let botChannel = await client.channels.fetch(channelId);
